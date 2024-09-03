@@ -17,7 +17,7 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "128": "icon.png"
+      "128": "file.png"
     }
   }
 }

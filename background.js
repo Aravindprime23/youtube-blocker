@@ -27,3 +27,9 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
         }
     }
 });
+
+chrome.webNavigation.onBeforeNavigate.addListener(function(details) {
+    if (viewCount >= 10 && details.url.includes('youtube.com')) {
+        chrome.tabs.update(details.tabId, { url: chrome.runtime.getURL('blocked.html') });
+    }
+});

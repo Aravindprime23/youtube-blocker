@@ -4,20 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Video Limiter</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 10px;
-        }
-        #count {
-            font-size: 24px;
-            color: #333;
-        }
-    </style>
+    <link rel="stylesheet" href="popup.css"> 
 </head>
 <body>
-    <h1>YouTube Video Limiter</h1>
-    <p>You have watched <span id="count">0</span> videos today.</p>
+    <div class="container">
+        <h1>YouTube Video Limiter</h1>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-bar-fill"></div>
+            </div>
+            <div class="progress-info">
+                <div class="watched">
+                    <span id="count">0</span>
+                    <p>Videos Watched</p>
+                </div>
+                <div class="remaining">
+                    <span id="remainingCount">10</span>
+                    <p>Videos Remaining</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- <button id="resetButton">Reset Count (Testing)</button> -->
+    </div>
     <script src="popup.js"></script>
 </body>
 </html>
