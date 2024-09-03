@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Video Limiter",
+  "version": "1.0",
+  "description": "Limits YouTube video views to 10 per day.",
+  "permissions": ["storage", "webNavigation"],
+  "host_permissions": ["https://www.youtube.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "128": "icon.png"
+    }
+  }
+}
