@@ -64,7 +64,7 @@ function changeViewLimit(newLimit) {
   console.log(`New view limit set to: ${viewLimit}`);
 }
 
-// Example: Change the limit to 5 (this could be triggered by user input)
+// Example: Change the limit to 5 (this could be triggered by user input
 changeViewLimit(10);
 
 // Listen for URL changes to a YouTube video
