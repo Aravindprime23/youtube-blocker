@@ -5,11 +5,8 @@ body {
 }
 
 .container {
-    background-color: #060606;
-    /* background: linear-gradient(to bottom right, #046cb6, #f60808); */
-    /* background: linear-gradient(to bottom right, #8d2828, #148fec); */
+    background-color: #060606; /* Dark background for the container */
     padding: 20px;
-    /* border-radius: 15px; */
     text-align: center;
     width: 250px; /* Adjust as needed */
 }
@@ -19,7 +16,7 @@ h1 {
     margin-bottom: 20px; /* Increased margin for spacing */
 }
 
-p{
+p {
     color: #faf9f9;
 }
 
@@ -46,16 +43,16 @@ p{
     color: #fc0505; 
 }
 
-#remainingCount{
-font-size: 24px; /* Slightly smaller font size */
-font-weight: bold;
-color: #1791ce; 
+#remainingCount {
+    font-size: 24px; /* Slightly smaller font size */
+    font-weight: bold;
+    color: #1791ce; 
 }
 
 .progress-bar {
     width: 80%;
     height: 20px;
-    background-color: #1791ce;
+    background-color: #1791ce; /* Progress bar background color */
     border-radius: 5px;
     margin: 0 auto 20px;
     overflow: hidden; 
@@ -63,16 +60,20 @@ color: #1791ce;
 
 .progress-bar-fill {
     height: 100%;
-    background-color: #fc0505;
+    background-color: #fc0505; /* Fill color of the progress bar */
     width: 0%; 
     transition: width 0.5s ease; 
 }
 
 button {
-    background-color: #dc3545; 
+    background-color: #dc3545; /* Button color */
     color: white;
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+button:hover {
+    background-color: #c82333; /* Darker shade for button on hover */
 }
