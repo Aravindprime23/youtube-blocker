@@ -1,35 +1,50 @@
 let viewCount = 0;
 const today = new Date().toDateString();
-chrome.storage.local.get(['viewCount', 'lastViewDate'], function(result) {
-    const lastViewDate = result.lastViewDate || '';  // Default to an empty string if undefined
-    const storedViewCount = result.viewCount || 0;   // Default to 0 if undefined
 
-    if (lastViewDate === today) {
-        viewCount = storedViewCount;
-    } else {
-        viewCount = 0;
-        chrome.storage.local.set({ 'viewCount': viewCount, 'lastViewDate': today });
-    }
+// Load the stored values from local storage
+chrome.storage.local.get(["viewCount", "lastViewDate"], function (result) {
+  const lastViewDate = result.lastViewDate || ""; // Default to an empty string if undefined
+  const storedViewCount = result.viewCount || 0; // Default to 0 if undefined
 
-    console.log('Initial viewCount:', viewCount);  // Log initial view count
+  if (lastViewDate === today) {
+    viewCount = storedViewCount;
+  } else {
+    viewCount = 0;
+    chrome.storage.local.set({ viewCount: viewCount, lastViewDate: today });
+  }
+
+  console.log("Initial viewCount:", viewCount); // Log initial view count
 });
 
-chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
-    if (details.url.includes('youtube.com/watch')) {
-        viewCount++;
-        console.log(`YouTube Video Count: ${viewCount}`);
-        chrome.storage.local.set({ 'viewCount': viewCount, 'lastViewDate': today });
+// Function to update view count and check the limit
+function updateViewCount(tabId) {
+  viewCount++;
+  chrome.storage.local.set({ viewCount: viewCount, lastViewDate: today });
+  console.log(`YouTube Video Count: ${viewCount}`);
 
-        if (viewCount >= 10) {
-            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                chrome.tabs.sendMessage(tabs[0].id, {action: "block"});
-            });
-        }
-    }
+  // Check if the view count exceeds the limit
+  if (viewCount > 3) {
+    chrome.tabs.update(tabId, {
+      url: chrome.runtime.getURL("blocked.html"),
+    });
+  }
+}
+
+// Listen for URL changes to a YouTube video
+chrome.webNavigation.onHistoryStateUpdated.addListener(function (details) {
+  if (details.url.includes("youtube.com/watch")) {
+    updateViewCount(details.tabId);
+  }
 });
 
-chrome.webNavigation.onBeforeNavigate.addListener(function(details) {
-    if (viewCount >= 10 && details.url.includes('youtube.com')) {
-        chrome.tabs.update(details.tabId, { url: chrome.runtime.getURL('blocked.html') });
-    }
+// Also listen for page navigation to block immediately if the view count is exceeded
+chrome.webNavigation.onBeforeNavigate.addListener(function (details) {
+  if (
+    (details.url.includes("https://www.youtube.com") && viewCount > 3) ||
+    details.url.includes("youtube.com/watch")
+  ) {
+    chrome.tabs.update(details.tabId, {
+      url: chrome.runtime.getURL("blocked.html"),
+    });
+  }
 });
