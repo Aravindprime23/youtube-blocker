@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Video Limiter</title>
-    <link rel="stylesheet" href="popup.css"> 
+    <link rel="stylesheet" href="popup.css">
 </head>
 <body>
     <div class="container">
         <h1>YouTube Video Limiter</h1>
+        <div id="limitInfo"></div> <!-- Add this line to show the limit info -->
 
         <div class="progress-container">
             <div class="progress-bar">
@@ -26,7 +27,8 @@
             </div>
         </div>
 
-        <!-- <button id="resetButton">Reset Count (Testing)</button> -->
+        <!-- Button to open the settings page -->
+        <button id="settingsButton">Open Settings</button>
     </div>
     <script src="popup.js"></script>
 </body>
