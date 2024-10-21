@@ -19,5 +19,9 @@
     "default_icon": {
       "128": "file.png"
     }
+  },
+  "options_page": "settings.html",  
+  "icons": {
+    "128": "file.png"
   }
 }
