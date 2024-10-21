@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1>YouTube Video Limiter</h1>
-        <div id="limitInfo"></div> <!-- Add this line to show the limit info -->
+        <div id="limitInfo"></div> <!-- Show limit info -->
 
         <div class="progress-container">
             <div class="progress-bar">
@@ -27,8 +27,16 @@
             </div>
         </div>
 
-        <!-- Button to open the settings page -->
+        <!-- Settings Button -->
         <button id="settingsButton">Open Settings</button>
+
+        <h2>Testing Controls</h2>
+        <div class="button-group">
+            <button id="incrementViewCountButton">Increment View Count</button>
+            <button id="resetViewCountButton">Reset View Count</button>
+            <button id="setLimitButton">Set Limit to 5</button>
+            <button id="openBlockedPageButton">Open Blocked Page</button>
+        </div>
     </div>
     <script src="popup.js"></script>
 </body>
