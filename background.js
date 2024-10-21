@@ -1,5 +1,5 @@
 let viewCount = 0;
-let viewLimit = 10; // Default limit
+let viewLimit = 10;
 const today = new Date().toDateString();
 let watchedVideos = []; // Array to store watched video URLs
 
