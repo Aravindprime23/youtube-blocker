@@ -3,7 +3,7 @@ const today = new Date().toDateString();
 
 // Load the stored values from local storage
 chrome.storage.local.get(["viewCount", "lastViewDate"], function (result) {
-  const lastViewDate = result.lastViewDate || ""; // Default to an empty string if undefined
+  const lastViewDate = result.lastViewDate || ""; // Default to an empty string if undefine
   const storedViewCount = result.viewCount || 0; // Default to 0 if undefined
 
   if (lastViewDate === today) {
