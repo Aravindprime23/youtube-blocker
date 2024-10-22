@@ -1,61 +1,49 @@
 document.addEventListener("DOMContentLoaded", function () {
     const settingsButton = document.getElementById("settingsButton");
+    const incrementButton = document.getElementById("incrementViewCountButton");
+    const resetButton = document.getElementById("resetViewCountButton");
+    const showStatsButton = document.getElementById("showStatsButton");
+    const resetLimitButton = document.getElementById("resetLimitButton");
     const limitInfo = document.getElementById("limitInfo");
-
-    // Check if a limit has already been set
-    chrome.storage.local.get(["videoLimit"], function (result) {
-        if (result.videoLimit) {
-            settingsButton.style.display = "none"; // Hide the button
-            limitInfo.textContent = `Your daily video limit is set to ${result.videoLimit}.`; // Show saved limit
-        } else {
-            limitInfo.textContent = "You can set your daily video limit.";
-        }
-
-        // Update the view count and remaining videos
-        chrome.storage.local.get(["viewCount"], function (countResult) {
-            const viewCount = countResult.viewCount || 0;
-            document.getElementById("count").textContent = viewCount;
-
-            const remainingCount = (result.videoLimit || 10) - viewCount; // Calculate remaining videos
-            document.getElementById("remainingCount").textContent = remainingCount;
-
-            // Calculate progress percentage and update progress bar
-            const progressPercent = (viewCount / (result.videoLimit || 10)) * 100;
-            document.querySelector(".progress-bar-fill").style.width = progressPercent + "%";
-        });
+  
+    // Load initial video limit and view count from storage
+    chrome.storage.local.get(["videoLimit", "viewCount"], function (result) {
+      const videoLimit = result.videoLimit;
+      const viewCount = result.viewCount || 0;
+  
+      // Check if a video limit is set
+      if (videoLimit) {
+        limitInfo.textContent = `Your daily video limit is set to ${videoLimit}.`;
+        settingsButton.style.display = "none"; // Hide settings button if limit is set
+        console.log("Limit is set. Settings button hidden.");
+      } else {
+        limitInfo.textContent = "You can set your daily video limit.";
+        settingsButton.style.display = "block"; // Show settings button if no limit is set
+        console.log("Limit not set. Settings button displayed.");
+      }
+  
+      // Update the UI with initial values
+      updateUI(viewCount, videoLimit || 10);
     });
-
-    // Open settings page when the button is clicked
+  
+    // Function to update the UI
+    function updateUI(viewCount, videoLimit) {
+      document.getElementById("count").textContent = viewCount;
+      const remainingCount = Math.max(videoLimit - viewCount, 0);
+      document.getElementById("remainingCount").textContent = remainingCount;
+  
+      // Update progress bar
+      const progressPercent = (viewCount / videoLimit) * 100;
+      document.querySelector(".progress-bar-fill").style.width = Math.min(progressPercent, 100) + "%";
+  
+      // Log UI state
+      console.log(`UI Updated: View Count = ${viewCount}, Remaining = ${remainingCount}, Limit = ${videoLimit}`);
+    }
+  
+    // Open settings page when the settings button is clicked
     settingsButton.addEventListener("click", function () {
-        chrome.runtime.openOptionsPage(); // Open the settings/options page
+      chrome.runtime.openOptionsPage(); // Open the settings/options page
+      console.log("Opened settings page.");
     });
-
-    // Increment view count button
-    document.getElementById("incrementViewCountButton").addEventListener("click", function () {
-        chrome.storage.local.get(["viewCount"], function (result) {
-            const newViewCount = (result.viewCount || 0) + 1;
-            chrome.storage.local.set({ viewCount: newViewCount });
-            alert(`View count incremented. New count: ${newViewCount}`);
-            location.reload(); // Refresh to update the displayed values
-        });
-    });
-
-    // Reset view count button
-    document.getElementById("resetViewCountButton").addEventListener("click", function () {
-        chrome.storage.local.set({ viewCount: 0 });
-        alert('View count reset to 0.');
-        location.reload(); // Refresh to update the displayed values
-    });
-
-    // Set limit button
-    document.getElementById("setLimitButton").addEventListener("click", function () {
-        chrome.storage.local.set({ videoLimit: 5 });
-        alert('Daily video limit set to 5.');
-        location.reload(); // Refresh to update the displayed values
-    });
-
-    // Open blocked page button
-    document.getElementById("openBlockedPageButton").addEventListener("click", function () {
-        chrome.tabs.create({ url: chrome.runtime.getURL("blocked.html") });
-    });
-});
+      });
+  
