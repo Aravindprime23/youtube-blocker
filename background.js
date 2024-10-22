@@ -1,10 +1,10 @@
 let viewCount = 0;
 let viewLimit = 10; // Default limit
-const today = new Date().toDateString();
+let maxArraySize = viewLimit;
 let watchedVideos = [];
+const today = new Date().toDateString();
 
 // Load stored values from local storage
-//hi
 chrome.storage.local.get(
   ["viewCount", "lastViewDate", "videoLimit", "watchedVideos"],
   function (result) {
@@ -13,18 +13,19 @@ chrome.storage.local.get(
     const storedViewLimit = result.videoLimit || viewLimit;
     const storedWatchedVideos = result.watchedVideos || [];
 
+    // Set the current view limit and max array size
     viewLimit = storedViewLimit;
     maxArraySize = viewLimit;
     watchedVideos = storedWatchedVideos.slice(0, maxArraySize); // Trim to max size
 
+    // Reset view count if it's a new day
     if (lastViewDate === today) {
       viewCount = storedViewCount;
     } else {
       viewCount = 0;
       chrome.storage.local.set({ viewCount: viewCount, lastViewDate: today });
     }
-    console.log("Initial viewCount:", viewCount);
-    console.log("Current viewLimit:", viewLimit);
+
     console.log("Initial viewCount:", viewCount);
     console.log("Current viewLimit (and max array size):", viewLimit);
   }
@@ -34,21 +35,21 @@ chrome.storage.local.get(
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.action === "updateLimit") {
     viewLimit = message.limit;
-    chrome.storage.local.set({
-      videoLimit: viewLimit,
-      watchedVideos: watchedVideos,
-    });
-    console.log(`View limit and max array size updated to: ${viewLimit}`);
-  }
-
-  if (message.action === "updateArraySize") {
-    maxArraySize = message.size;
+    maxArraySize = viewLimit;
     watchedVideos = watchedVideos.slice(0, maxArraySize); // Trim to new max size
-    chrome.storage.local.set({
-      maxArraySize: maxArraySize,
-      watchedVideos: watchedVideos,
-    });
-    console.log(`Max array size updated to: ${maxArraySize}`);
+
+    // Save the new limit and array size to storage
+    chrome.storage.local.set({ videoLimit: viewLimit, watchedVideos: watchedVideos });
+
+    console.log(`View limit and max array size updated to: ${viewLimit}`);
+  } else if (message.action === "resetExtension") {
+    // Reset internal variables
+    viewCount = 0;
+    viewLimit = 3;
+    maxArraySize = viewLimit;
+    watchedVideos = [];
+
+    console.log("Extension reset. Internal variables cleared.");
   }
 });
 
@@ -73,13 +74,11 @@ function updateViewCount(tabId, videoUrl) {
     return;
   }
 
-  // Add the video ID to the watched list array
+  // Add the video ID to the watched list if there's space
   if (watchedVideos.length < maxArraySize) {
     watchedVideos.push(baseVideoId);
     chrome.storage.local.set({ watchedVideos: watchedVideos });
-    console.log(
-      `Added video ID ${baseVideoId}. Watched videos: ${watchedVideos}`
-    );
+    console.log(`Added video ID ${baseVideoId}. Watched videos: ${watchedVideos}`);
   } else {
     console.log(`Cannot add video ID ${baseVideoId}. Array is full.`);
   }
@@ -89,8 +88,9 @@ function updateViewCount(tabId, videoUrl) {
   chrome.storage.local.set({ viewCount: viewCount, lastViewDate: today });
   console.log(`YouTube Video Count: ${viewCount}`);
 
-  // Block YouTube if viewCount exceeds (viewLimit + 1)
+  // Block YouTube if viewCount exceeds the limit
   if (viewCount > viewLimit) {
+    console.log(`View limit exceeded. Blocking further videos.`);
     chrome.tabs.update(tabId, {
       url: chrome.runtime.getURL("blocked.html"),
     });
@@ -100,7 +100,14 @@ function updateViewCount(tabId, videoUrl) {
 // Listen for YouTube video navigation
 chrome.webNavigation.onHistoryStateUpdated.addListener(function (details) {
   if (details.url.includes("youtube.com/watch")) {
-    updateViewCount(details.tabId, details.url);
+    if (viewCount < viewLimit) {
+      updateViewCount(details.tabId, details.url);
+    } else {
+      console.log("View limit reached. Blocking YouTube.");
+      chrome.tabs.update(details.tabId, {
+        url: chrome.runtime.getURL("blocked.html"),
+      });
+    }
   }
 });
 
@@ -113,8 +120,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(function (details) {
     if (
       url.hostname === "www.youtube.com" &&
       !url.pathname.startsWith("/embed") &&
-      viewCount > viewLimit &&
-      !watchedVideos.includes(getBaseVideoId(details.url))
+      viewCount >= viewLimit
     ) {
       console.log(`Blocking YouTube URL: ${details.url}`);
       chrome.tabs.update(details.tabId, {
