@@ -4,6 +4,7 @@ const today = new Date().toDateString();
 let watchedVideos = [];
 
 // Load stored values from local storage
+//hi
 chrome.storage.local.get(
   ["viewCount", "lastViewDate", "videoLimit", "watchedVideos"],
   function (result) {
