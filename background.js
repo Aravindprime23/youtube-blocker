@@ -4,30 +4,50 @@ const today = new Date().toDateString();
 let watchedVideos = [];
 
 // Load stored values from local storage
-chrome.storage.local.get(["viewCount", "lastViewDate", "videoLimit", "watchedVideos"], function (result) {
-  const lastViewDate = result.lastViewDate || "";
-  const storedViewCount = result.viewCount || 0;
-  const storedViewLimit = result.videoLimit || viewLimit;
-  const storedWatchedVideos = result.watchedVideos || [];
+chrome.storage.local.get(
+  ["viewCount", "lastViewDate", "videoLimit", "watchedVideos"],
+  function (result) {
+    const lastViewDate = result.lastViewDate || "";
+    const storedViewCount = result.viewCount || 0;
+    const storedViewLimit = result.videoLimit || viewLimit;
+    const storedWatchedVideos = result.watchedVideos || [];
 
-  viewLimit = storedViewLimit;
-  watchedVideos = storedWatchedVideos;
+    viewLimit = storedViewLimit;
+    maxArraySize = viewLimit;
+    watchedVideos = storedWatchedVideos.slice(0, maxArraySize); // Trim to max size
 
-  if (lastViewDate === today) {
-    viewCount = storedViewCount;
-  } else {
-    viewCount = 0;
-    chrome.storage.local.set({ viewCount: viewCount, lastViewDate: today });
+    if (lastViewDate === today) {
+      viewCount = storedViewCount;
+    } else {
+      viewCount = 0;
+      chrome.storage.local.set({ viewCount: viewCount, lastViewDate: today });
+    }
+    console.log("Initial viewCount:", viewCount);
+    console.log("Current viewLimit:", viewLimit);
+    console.log("Initial viewCount:", viewCount);
+    console.log("Current viewLimit (and max array size):", viewLimit);
   }
-  console.log("Initial viewCount:", viewCount);
-  console.log("Current viewLimit:", viewLimit);
-});
+);
 
 // Listen for messages from other scripts
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.action === "updateLimit") {
     viewLimit = message.limit;
-    console.log(`View limit updated to: ${viewLimit}`);
+    chrome.storage.local.set({
+      videoLimit: viewLimit,
+      watchedVideos: watchedVideos,
+    });
+    console.log(`View limit and max array size updated to: ${viewLimit}`);
+  }
+
+  if (message.action === "updateArraySize") {
+    maxArraySize = message.size;
+    watchedVideos = watchedVideos.slice(0, maxArraySize); // Trim to new max size
+    chrome.storage.local.set({
+      maxArraySize: maxArraySize,
+      watchedVideos: watchedVideos,
+    });
+    console.log(`Max array size updated to: ${maxArraySize}`);
   }
 });
 
@@ -52,9 +72,16 @@ function updateViewCount(tabId, videoUrl) {
     return;
   }
 
-  // Add the video ID to the watched list
-  watchedVideos.push(baseVideoId);
-  chrome.storage.local.set({ watchedVideos: watchedVideos });
+  // Add the video ID to the watched list array
+  if (watchedVideos.length < maxArraySize) {
+    watchedVideos.push(baseVideoId);
+    chrome.storage.local.set({ watchedVideos: watchedVideos });
+    console.log(
+      `Added video ID ${baseVideoId}. Watched videos: ${watchedVideos}`
+    );
+  } else {
+    console.log(`Cannot add video ID ${baseVideoId}. Array is full.`);
+  }
 
   // Increment the view count
   viewCount++;
@@ -78,9 +105,24 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(function (details) {
 
 // Block YouTube access immediately if the limit is exceeded
 chrome.webNavigation.onBeforeNavigate.addListener(function (details) {
-  if (details.url.includes("https://www.youtube.com") && viewCount > viewLimit) {
-    chrome.tabs.update(details.tabId, {
-      url: chrome.runtime.getURL("blocked.html"),
-    });
+  try {
+    const url = new URL(details.url);
+
+    // Only block full YouTube URLs, not embedded ones
+    if (
+      url.hostname === "www.youtube.com" &&
+      !url.pathname.startsWith("/embed") &&
+      viewCount > viewLimit &&
+      !watchedVideos.includes(getBaseVideoId(details.url))
+    ) {
+      console.log(`Blocking YouTube URL: ${details.url}`);
+      chrome.tabs.update(details.tabId, {
+        url: chrome.runtime.getURL("blocked.html"),
+      });
+    } else {
+      console.log(`Skipping embed or other URL: ${details.url}`);
+    }
+  } catch (e) {
+    console.error("Error parsing URL:", e);
   }
 });

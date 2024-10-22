@@ -23,5 +23,11 @@
   "options_page": "settings.html",
   "icons": {
     "128": "assets/file.png"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["history.html", "history.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
