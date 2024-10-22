@@ -21,11 +21,25 @@
           <p>Videos Watched</p>
         </div>
         <div class="remaining">
-          <span id="remainingCount">10</span>
+          <span id="remainingCount">3</span>
           <p>Videos Remaining</p>
         </div>
       </div>
-      <button id="settingsButton" style="display: none;">Open Settings</button>
+
+      <!-- Settings and Reset Buttons -->
+      <button id="settingsButton">Open Settings</button>
+    </div>
+    
+    <!-- Testing Tools Section -->
+    <div class="testing-section">
+      <h2>Testing Tools</h2>
+      <button id="incrementViewCountButton" class="testing-button">Increment View Count</button>
+      <button id="clearWatchedVideosButton" class="testing-button">Clear Watched Videos</button>
+      <button id="showCurrentStateButton" class="testing-button">Show Current State</button>
+      <button id="resetExtensionButton">Reset Extension</button>
+    </div>
+  </div>
+
   <script src="popup.js"></script>
 </body>
 </html>

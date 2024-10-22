@@ -1,4 +1,4 @@
-/* popup.css */
+/* Base styling for the popup */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0; 
@@ -38,13 +38,13 @@ p {
 }
 
 #count {
-    font-size: 24px; /* Slightly smaller font size */
+    font-size: 24px; 
     font-weight: bold;
     color: #fc0505; 
 }
 
 #remainingCount {
-    font-size: 24px; /* Slightly smaller font size */
+    font-size: 24px; 
     font-weight: bold;
     color: #1791ce; 
 }
@@ -52,7 +52,7 @@ p {
 .progress-bar {
     width: 80%;
     height: 20px;
-    background-color: #1791ce; /* Progress bar background color */
+    background-color: #1791ce; 
     border-radius: 5px;
     margin: 0 auto 20px;
     overflow: hidden; 
@@ -60,7 +60,7 @@ p {
 
 .progress-bar-fill {
     height: 100%;
-    background-color: #fc0505; /* Fill color of the progress bar */
+    background-color: #fc0505; 
     width: 0%; 
     transition: width 0.5s ease; 
 }
@@ -72,8 +72,31 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-top: 10px; 
 }
 
 button:hover {
     background-color: #c82333; /* Darker shade for button on hover */
+}
+
+/* Testing section styling */
+.testing-section {
+    margin-top: 20px;
+    padding: 10px;
+    border-top: 1px solid #faf9f9;
+}
+
+.testing-section h2 {
+    font-size: 16px;
+    color: #faf9f9;
+    margin-bottom: 10px;
+}
+
+.testing-button {
+    background-color: #6c757d; /* Gray color for testing buttons */
+    color: white;
+}
+
+.testing-button:hover {
+    background-color: #5a6268; /* Darker shade for testing buttons on hover */
 }
