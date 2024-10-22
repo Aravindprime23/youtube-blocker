@@ -1,13 +1,8 @@
 {
   "manifest_version": 3,
   "name": "YouTube Video Limiter",
-<<<<<<< Updated upstream
-  "version": "1.0",
-  "description": "Limits YouTube video views to a set number per day.",
-=======
   "version": "0.2.0",
   "description": "Limits YouTube video per day.",
->>>>>>> Stashed changes
   "permissions": ["storage", "webNavigation"],
   "host_permissions": ["https://www.youtube.com/*"],
   "background": {
