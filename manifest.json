@@ -1,8 +1,13 @@
 {
   "manifest_version": 3,
   "name": "YouTube Video Limiter",
+<<<<<<< Updated upstream
   "version": "1.0",
   "description": "Limits YouTube video views to a set number per day.",
+=======
+  "version": "0.2.0",
+  "description": "Limits YouTube video per day.",
+>>>>>>> Stashed changes
   "permissions": ["storage", "webNavigation"],
   "host_permissions": ["https://www.youtube.com/*"],
   "background": {
@@ -17,11 +22,11 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "128": "file.png"
+      "128": "assets/file.png"
     }
   },
   "options_page": "settings.html",
   "icons": {
-    "128": "file.png"
+    "128": "assets/file.png"
   }
 }
