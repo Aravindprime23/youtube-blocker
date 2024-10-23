@@ -1,21 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>YouTube Video Limiter Settings</title>
-    <link rel="stylesheet" href="settings.css">
-</head>
-<body>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #060606;
+        color: #faf9f9;
+        text-align: center;
+      }
+
+      .container {
+        padding: 20px;
+        max-width: 300px;
+        margin: 50px auto;
+      }
+
+      input {
+        padding: 5px;
+        margin: 10px 0;
+        width: 80px;
+      }
+
+      button {
+        background-color: #1791ce;
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #fc0505;
+      }
+    </style>
+    <link rel="stylesheet" href="settings.css" />
+  </head>
+  <body>
     <div class="container">
-        <h1>Settings</h1>
-        <form id="limitForm">
-            <label for="videoLimit">Set Video Limit:</label>
-            <input type="number" id="videoLimit" min="1" max="20" value="10" />
-            <button type="submit">Save Limit</button>
-        </form>
-        <p id="statusMessage"></p>
+      <h1>Settings</h1>
+      <form id="limitForm">
+        <label for="videoLimit">Set Video Limit:</label>
+        <input type="number" id="videoLimit" min="1" max="20" value="10" />
+        <button type="submit">Save Limit</button>
+      </form>
+      <p id="statusMessage"></p>
     </div>
     <script src="settings.js"></script>
-</body>
+  </body>
 </html>

@@ -1,45 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube Video Limiter</title>
-  <link rel="stylesheet" href="popup.css">
-</head>
-<body>
-  <div class="container">
-    <h1>YouTube Video Limiter</h1>
-    <div id="limitInfo"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube Video Limiter</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+      }
 
-    <div class="progress-container">
-      <div class="progress-bar">
-        <div class="progress-bar-fill"></div>
-      </div>
-      <div class="progress-info">
-        <div class="watched">
-          <span id="count">0</span>
-          <p>Videos Watched</p>
+      .container {
+        background-color: #060606; /* Dark background for the container */
+        padding: 20px;
+        text-align: center;
+        width: 250px; /* Adjust as needed */
+      }
+
+      h1 {
+        color: #faf9f9;
+        margin-bottom: 20px; /* Increased margin for spacing */
+      }
+
+      p {
+        color: #faf9f9;
+      }
+
+      .progress-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .progress-info {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .watched,
+      .remaining {
+        text-align: center;
+      }
+
+      #count {
+        font-size: 24px;
+        font-weight: bold;
+        color: #fc0505;
+      }
+
+      #remainingCount {
+        font-size: 24px;
+        font-weight: bold;
+        color: #1791ce;
+      }
+
+      .progress-bar {
+        width: 80%;
+        height: 20px;
+        background-color: #1791ce;
+        border-radius: 5px;
+        margin: 0 auto 20px;
+        overflow: hidden;
+      }
+
+      .progress-bar-fill {
+        height: 100%;
+        background-color: #fc0505;
+        width: 0%;
+        transition: width 0.5s ease;
+      }
+
+      button {
+        background-color: #dc3545; /* Button color */
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      button:hover {
+        background-color: #c82333; /* Darker shade for button on hover */
+      }
+
+      /* Testing section styling */
+      .testing-section {
+        margin-top: 20px;
+        padding: 10px;
+        border-top: 1px solid #faf9f9;
+      }
+
+      .testing-section h2 {
+        font-size: 16px;
+        color: #faf9f9;
+        margin-bottom: 10px;
+      }
+
+      .testing-button {
+        background-color: #6c757d; /* Gray color for testing buttons */
+        color: white;
+      }
+
+      .testing-button:hover {
+        background-color: #5a6268; /* Darker shade for testing buttons on hover */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>YouTube Video Limiter</h1>
+      <div id="limitInfo"></div>
+
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-bar-fill"></div>
         </div>
-        <div class="remaining">
-          <span id="remainingCount">3</span>
-          <p>Videos Remaining</p>
+        <div class="progress-info">
+          <div class="watched">
+            <span id="count">0</span>
+            <p>Videos Watched</p>
+          </div>
+          <div class="remaining">
+            <span id="remainingCount">3</span>
+            <p>Videos Remaining</p>
+          </div>
         </div>
+
+        <!-- Settings and Reset Buttons -->
+        <button id="settingsButton">Open Settings</button>
       </div>
 
-      <!-- Settings and Reset Buttons -->
-      <button id="settingsButton">Open Settings</button>
+      <!-- Testing Tools Section -->
+      <div class="testing-section">
+        <h2>Testing Tools</h2>
+        <button id="incrementViewCountButton" class="testing-button">
+          Increment View Count
+        </button>
+        <button id="clearWatchedVideosButton" class="testing-button">
+          Clear Watched Videos
+        </button>
+        <button id="showCurrentStateButton" class="testing-button">
+          Show Current State
+        </button>
+        <button id="resetExtensionButton">Reset Extension</button>
+      </div>
     </div>
-    
-    <!-- Testing Tools Section -->
-    <div class="testing-section">
-      <h2>Testing Tools</h2>
-      <button id="incrementViewCountButton" class="testing-button">Increment View Count</button>
-      <button id="clearWatchedVideosButton" class="testing-button">Clear Watched Videos</button>
-      <button id="showCurrentStateButton" class="testing-button">Show Current State</button>
-      <button id="resetExtensionButton">Reset Extension</button>
-    </div>
-  </div>
 
-  <script src="popup.js"></script>
-</body>
+    <script src="popup.js"></script>
+  </body>
 </html>
