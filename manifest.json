@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "YouTube Video Limiter",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Limits YouTube video per day.",
   "permissions": ["storage", "webNavigation"],
   "host_permissions": ["https://www.youtube.com/*"],
