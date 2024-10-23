@@ -2,15 +2,21 @@
   "manifest_version": 3,
   "name": "YouTube Video Limiter",
   "version": "0.2.1",
-  "description": "Limits YouTube video per day.",
-  "permissions": ["storage", "webNavigation"],
-  "host_permissions": ["https://www.youtube.com/*"],
+  "description": "Limits YouTube video viewing per day.",
+  "permissions": [
+    "storage",
+    "webNavigation",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "*://*.youtube.com/*"
+  ],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/*"],
+      "matches": ["*://*.youtube.com/*"],
       "js": ["content.js"]
     }
   ],
@@ -26,8 +32,11 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["history.html", "history.js"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "history.html",
+        "history.js"
+      ],
+      "matches": ["*://*.youtube.com/*"]
     }
   ]
 }
