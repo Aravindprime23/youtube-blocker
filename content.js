@@ -17,3 +17,27 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     document.body.appendChild(overlay);
   }
 });
+
+// Remove video previews
+const disableVideoPreviews = () => {
+  const hoverPreviews = document.querySelectorAll("ytd-video-preview, .ytd-video-preview, video");
+  
+  hoverPreviews.forEach((preview) => {
+    preview.remove();
+  });
+};
+
+// Continuously observe the page for dynamic content changes and remove previews
+const observer = new MutationObserver(() => {
+  disableVideoPreviews();
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
+
+console.log("YouTube previews are blocked.");
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "blockPreviews") {
+    disableVideoPreviews();
+  }
+});

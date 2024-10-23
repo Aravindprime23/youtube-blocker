@@ -1,0 +1,12 @@
+/* ytd-thumbnail, */
+ytd-video-preview,
+.ytd-video-preview,
+#hover-overlays,
+#mouseover-overlay,
+.video-preview-player {
+  display: none !important;
+}
+
+#thumbnail:hover {
+  pointer-events: none;
+}
