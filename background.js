@@ -52,6 +52,9 @@ chrome.runtime.onMessage.addListener(function (message) {
     });
 
     console.log("Extension reset. Internal variables cleared.");
+  } else if (message.action === "blockPreviews") {
+    // Send a message to the content script to block YouTube previews
+    chrome.tabs.sendMessage(sender.tab.id, { action: "blockPreviews" });
   }
 });
 
