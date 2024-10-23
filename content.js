@@ -1,3 +1,4 @@
+// Description: This script is injected into the YouTube page and blocks video previews
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === "block") {
     const overlay = document.createElement("div");
