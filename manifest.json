@@ -27,8 +27,11 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["history.html", "history.js"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "history.html",
+        "history.js"
+      ],
+      "matches": ["*://*.youtube.com/*"]
     }
   ]
 }
