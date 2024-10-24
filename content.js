@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 // Remove video previews
 const disableVideoPreviews = () => {
-  const hoverPreviews = document.querySelectorAll("ytd-video-preview, .ytd-video-preview, video");
+  const hoverPreviews = document.querySelectorAll("ytd-video-preview, .ytd-video-preview");
   
   hoverPreviews.forEach((preview) => {
     preview.remove();
