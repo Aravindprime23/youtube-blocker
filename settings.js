@@ -64,6 +64,12 @@ document.addEventListener("DOMContentLoaded", function () {
               videoLimitSet = true;
               statusMessage.textContent = `Permanent video limit set to ${videoLimit}. It cannot be changed.`;
               limitForm.classList.add("hidden");
+              
+              // Notify background script of the new video limit
+              chrome.runtime.sendMessage({ 
+                action: "updateLimit", 
+                limit: parseInt(videoLimit) 
+              });
           });
       } else {
           statusMessage.textContent = `Video limit is already set and cannot be changed.`;
@@ -81,6 +87,12 @@ document.addEventListener("DOMContentLoaded", function () {
               timeLimitSet = true;
               statusMessage.textContent = `Permanent time limit set to ${timeLimit} minutes. It cannot be changed.`;
               timeLimitForm.classList.add("hidden");
+              
+              // Notify background script of the new time limit
+              chrome.runtime.sendMessage({ 
+                action: "updateTimeLimit", 
+                limit: parseInt(timeLimit) 
+              });
           });
       } else {
           statusMessage.textContent = `Time limit is already set and cannot be changed.`;
