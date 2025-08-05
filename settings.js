@@ -10,16 +10,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Check if a limit is already set and update UI accordingly
   chrome.storage.local.get(["videoLimit", "timeLimit"], function (result) {
-      if (result.videoLimit) {
+      if (result.videoLimit && result.timeLimit) {
           videoLimitSet = true;
-          statusMessage.textContent = `Permanent video limit set to ${result.videoLimit}. It cannot be changed.`;
+          timeLimitSet = true;
+          statusMessage.textContent = `Both limits are set: ${result.videoLimit} videos and ${result.timeLimit} minutes. They cannot be changed.`;
           limitForm.classList.add("hidden");
+          timeLimitForm.classList.add("hidden");
+      } else if (result.videoLimit) {
+          videoLimitSet = true;
+          statusMessage.textContent = `Video limit set to ${result.videoLimit}. You can still set a time limit.`;
+          limitForm.classList.add("hidden");
+          document.getElementById("videoLimit").value = result.videoLimit;
       } else if (result.timeLimit) {
           timeLimitSet = true;
-          statusMessage.textContent = `Permanent time limit set to ${result.timeLimit} minutes. It cannot be changed.`;
+          statusMessage.textContent = `Time limit set to ${result.timeLimit} minutes. You can still set a video limit.`;
           timeLimitForm.classList.add("hidden");
+          document.getElementById("timeLimit").value = result.timeLimit;
       } else {
-          statusMessage.textContent = "Please set your permanent limit.";
+          statusMessage.textContent = "Please set your daily limits.";
       }
   });
 
@@ -29,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
       timeTab.classList.remove("active");
       
       if (videoLimitSet) {
-          statusMessage.textContent = `Permanent video limit is set and cannot be changed.`;
+          statusMessage.textContent = `Video limit is already set and cannot be changed.`;
           limitForm.classList.add("hidden");
       } else {
           statusMessage.textContent = "Set your video limit.";
@@ -44,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
       videoTab.classList.remove("active");
       
       if (timeLimitSet) {
-          statusMessage.textContent = `Permanent time limit is set and cannot be changed.`;
+          statusMessage.textContent = `Time limit is already set and cannot be changed.`;
           timeLimitForm.classList.add("hidden");
       } else {
           statusMessage.textContent = "Set your time limit.";
@@ -62,8 +70,14 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!videoLimitSet) {
           chrome.storage.local.set({ videoLimit: parseInt(videoLimit) }, function () {
               videoLimitSet = true;
-              statusMessage.textContent = `Permanent video limit set to ${videoLimit}. It cannot be changed.`;
+              statusMessage.textContent = `Video limit set to ${videoLimit}. It cannot be changed.`;
               limitForm.classList.add("hidden");
+              
+              // Notify background script of the new video limit
+              chrome.runtime.sendMessage({ 
+                action: "updateLimit", 
+                limit: parseInt(videoLimit) 
+              });
           });
       } else {
           statusMessage.textContent = `Video limit is already set and cannot be changed.`;
@@ -79,8 +93,14 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!timeLimitSet) {
           chrome.storage.local.set({ timeLimit: parseInt(timeLimit) }, function () {
               timeLimitSet = true;
-              statusMessage.textContent = `Permanent time limit set to ${timeLimit} minutes. It cannot be changed.`;
+              statusMessage.textContent = `Time limit set to ${timeLimit} minutes. It cannot be changed.`;
               timeLimitForm.classList.add("hidden");
+              
+              // Notify background script of the new time limit
+              chrome.runtime.sendMessage({ 
+                action: "updateTimeLimit", 
+                limit: parseInt(timeLimit) 
+              });
           });
       } else {
           statusMessage.textContent = `Time limit is already set and cannot be changed.`;

@@ -49,13 +49,42 @@
   <body>
     <div class="container">
       <h1>You've Reached Your Daily YouTube Limit</h1>
-      <p>
+      <p id="limitMessage">
         It's time to shift your focus from watching others to building your own
         story. Remember, your dreams are worth pursuing. Take this opportunity
         to invest in yourself, learn something new, or work towards your goals.
       </p>
+      <div id="limitDetails" style="margin: 20px 0; padding: 15px; background-color: #f8f9fa; border-radius: 5px; color: #333;"></div>
       <a href="https://leetcode.com/" class="btn">Explore LeetCode</a>
       <a href="history.html" class="btn">View Watch History</a>
     </div>
+    
+    <script>
+      // Show which limit was reached
+      chrome.storage.local.get(
+        ["viewCount", "videoLimit", "timeLimit", "watchTime"],
+        function (result) {
+          const viewCount = result.viewCount || 0;
+          const videoLimit = result.videoLimit || 10;
+          const timeLimit = result.timeLimit || 30;
+          const watchTime = result.watchTime || 0;
+          
+          const limitDetails = document.getElementById("limitDetails");
+          let message = "";
+          
+          if (viewCount >= videoLimit && watchTime >= timeLimit) {
+            message = `You've reached both limits: ${viewCount}/${videoLimit} videos and ${watchTime.toFixed(1)}/${timeLimit} minutes.`;
+          } else if (viewCount >= videoLimit) {
+            message = `You've reached your video limit: ${viewCount}/${videoLimit} videos watched today.`;
+          } else if (watchTime >= timeLimit) {
+            message = `You've reached your time limit: ${watchTime.toFixed(1)}/${timeLimit} minutes watched today.`;
+          } else {
+            message = `Current usage: ${viewCount}/${videoLimit} videos, ${watchTime.toFixed(1)}/${timeLimit} minutes.`;
+          }
+          
+          limitDetails.textContent = message;
+        }
+      );
+    </script>
   </body>
 </html>
