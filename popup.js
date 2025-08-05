@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const incrementViewCountButton = document.getElementById(
     "incrementViewCountButton"
   );
+  const addWatchTimeButton = document.getElementById("addWatchTimeButton");
   const clearWatchedVideosButton = document.getElementById(
     "clearWatchedVideosButton"
   );
@@ -36,11 +37,10 @@ document.addEventListener("DOMContentLoaded", function () {
   function updateUI(viewCount, videoLimit, watchTime, timeLimit) {
     document.getElementById("count").textContent = viewCount;
     const remainingCount = Math.max(videoLimit - viewCount, 0);
-    document.getElementById("remainingCount").textContent = remainingCount;
 
     // Calculate progress based on both video count and time
     const videoProgressPercent = (viewCount / videoLimit) * 100;
-    const timeProgressPercent = (watchTime / timeLimit) * 100;
+    const timeProgressPercent = watchTime && timeLimit ? (watchTime / timeLimit) * 100 : 0;
     
     // Use the higher progress percentage to show overall progress
     const overallProgress = Math.max(videoProgressPercent, timeProgressPercent);
@@ -48,13 +48,18 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector(".progress-bar-fill").style.width =
       Math.min(overallProgress, 100) + "%";
       
-    // Update the remaining count text to show time if applicable
-    if (typeof timeLimit !== "undefined" && timeLimit > 0) {
-      const remainingTime = Math.max(timeLimit - watchTime, 0);
+    // Update the remaining count text to show time if time limit is set
+    if (timeLimit && timeLimit > 0) {
+      const remainingTime = Math.max(timeLimit - (watchTime || 0), 0);
       const remainingText = `${remainingCount} videos / ${remainingTime.toFixed(0)} min`;
       document.querySelector(".remaining p").textContent = "Remaining";
       document.getElementById("remainingCount").textContent = remainingText;
-      document.getElementById("remainingCount").style.fontSize = "18px"; // Smaller font for longer text
+      document.getElementById("remainingCount").style.fontSize = "16px"; // Smaller font for longer text
+    } else {
+      // Only video limit is set
+      document.getElementById("remainingCount").textContent = remainingCount;
+      document.querySelector(".remaining p").textContent = "Videos Remaining";
+      document.getElementById("remainingCount").style.fontSize = "24px"; // Original font size
     }
   }
 
@@ -112,6 +117,23 @@ document.addEventListener("DOMContentLoaded", function () {
         chrome.storage.local.set({ viewCount: newViewCount }, function () {
           console.log(`View count incremented. New count: ${newViewCount}`);
           updateUI(newViewCount, videoLimit, watchTime, timeLimit);
+        });
+      });
+    });
+  }
+
+  // Add watch time button (for testing)
+  if (addWatchTimeButton) {
+    addWatchTimeButton.addEventListener("click", function () {
+      chrome.storage.local.get(["watchTime", "timeLimit", "viewCount", "videoLimit"], function (result) {
+        let newWatchTime = (result.watchTime || 0) + 5; // Add 5 minutes
+        const timeLimit = result.timeLimit || 30;
+        const viewCount = result.viewCount || 0;
+        const videoLimit = result.videoLimit || 10;
+
+        chrome.storage.local.set({ watchTime: newWatchTime }, function () {
+          console.log(`Watch time incremented. New time: ${newWatchTime} minutes`);
+          updateUI(viewCount, videoLimit, newWatchTime, timeLimit);
         });
       });
     });

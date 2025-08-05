@@ -124,7 +124,7 @@ function getBaseVideoId(url) {
 
 // Add watch time and check time limit
 function addWatchTime(minutes) {
-  if (minutes > 0) {
+  if (minutes > 0 && !isNaN(minutes)) {
     watchTime += minutes;
     
     // Save updated watch time

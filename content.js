@@ -20,6 +20,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 // Track video events for time limit functionality
 let currentVideo = null;
+let lastEventTime = 0;
 
 function trackVideoEvents() {
   const video = document.querySelector('video');
@@ -28,18 +29,26 @@ function trackVideoEvents() {
     
     // Video started/loaded
     video.addEventListener('loadstart', () => {
-      chrome.runtime.sendMessage({
-        action: "videoStarted",
-        url: window.location.href
-      });
+      const now = Date.now();
+      if (now - lastEventTime > 1000) { // Debounce events
+        chrome.runtime.sendMessage({
+          action: "videoStarted",
+          url: window.location.href
+        });
+        lastEventTime = now;
+      }
     });
     
     // Video played
     video.addEventListener('play', () => {
-      chrome.runtime.sendMessage({
-        action: "videoStarted",
-        url: window.location.href
-      });
+      const now = Date.now();
+      if (now - lastEventTime > 500) { // Debounce events
+        chrome.runtime.sendMessage({
+          action: "videoStarted",
+          url: window.location.href
+        });
+        lastEventTime = now;
+      }
     });
     
     // Video paused
